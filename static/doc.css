@@ -79,6 +79,10 @@ hr.style {
   background-color: PapayaWhip;
 }
 
+.brand-logo{
+  padding-left: 20px !important;
+}
+
 .block_face{
   display: block;
   padding: 10px;

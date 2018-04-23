@@ -29,7 +29,6 @@ Vue.component('elk', {
   },
 })
 
-console.log("*****defined ");
 var app = new Vue({
   el: '#app',
   delimiters: ['${', '}'],
@@ -38,3 +37,7 @@ var app = new Vue({
   watch: {
     }
 });
+
+var elem = document.querySelector('select');
+ var instance = M.FormSelect.init(elem);
+console.log("done");

@@ -18,20 +18,33 @@
 <body>
   <nav>
     <div class="nav-wrapper grey darken-3">
-      <i class="left large brand-logo logo logo material-icons prefix teal-text text-accent-3">art_track</i>
+       <a href="#" class="brand-logo">Kiabi</a>
         <ul id="nav-mobile" class="right">
-          <li><a href="badges.html">  </a></li>
-          <li><a href="collapsible.html">version 0.0</a></li>
+          <li>
+            <a href="collapsible.html">version 0.0</a>
+          </li>
         </ul>
     </div>
   </nav>
     <img class="header" src={{url_for('static', filename='img/header.jpg')}} alt="header">
 
     <div class="container">
-      <h4>Woof API-services</h4>
+      <h4>Flux Kiabi</h4>
       <hr flex/></span>
       <div id="app">
-        <elk></elk>
+      </br>
+      </br>
+        <div class="input-field col s12">
+          <select multiple>
+            <option value="" disabled selected>Choose your option</option>
+            {% for dict_item in color_agreggation %}
+                <option value="{{loop.index}}">{{dict_item['key']}} - {{dict_item['doc_count']}}</option>
+            {% endfor %}
+          </select>
+          <label>Cardinalité sur la couleur</label>
+        </div>
+        <div style="height:200px">
+        </div>
       </div> <!-- app -->
     </div>
 </body>
@@ -47,9 +60,6 @@
           <h5 class="white-text">Links</h5>
           <ul>
             <li><a class="grey-text text-lighten-3" href="#!">Link 1</a></li>
-            <li><a class="grey-text text-lighten-3" href="#!">Link 2</a></li>
-            <li><a class="grey-text text-lighten-3" href="#!">Link 3</a></li>
-            <li><a class="grey-text text-lighten-3" href="#!">Link 4</a></li>
           </ul>
         </div>
       </div>
@@ -62,11 +72,11 @@
     </div>
 </footer>
 
-<script src={{url_for('static', filename='doc.js')}}></script>
 <script src="https://cdn.jsdelivr.net/npm/prismjs@1.13.0/prism.js"></script>
 <script src="https://cdn.jsdelivr.net/npm/prismjs@1.13.0/plugins/line-numbers/prism-line-numbers.min.js"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/materialize/1.0.0-beta/js/materialize.min.js"></script>
 <script src="https://unpkg.com/axios/dist/axios.min.js"></script>
+<script src={{url_for('static', filename='doc.js')}}></script>
 <link rel="stylesheet" href={{url_for('static', filename='doc.css')}}></link
 </body>
 </html>
