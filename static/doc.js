@@ -23,16 +23,14 @@ Vue.component('productlist', {
   },
 })
 
+Vue.use(VueMaterial.default)
 var app = new Vue({
   el: '#app',
   delimiters: ['${', '}'],
   methods: {
-    ageChange: function(e, value) {
-      if(e.target.checked){
-        this.elastic_filter["ageGroup"] = e.target.value
-      }else{
-        delete this.elastic_filter["ageGroup"]
-      }
+    ageChange: function() {
+      this.elastic_filter["ageGroup"] = this.age_group
+      console.log("dw",  this.age_group);
       this.axio_call(this.elastic_filter)
     },
     colorChange: function(e, value) {
@@ -59,7 +57,8 @@ var app = new Vue({
     }
   },
   data:{
-    elastic_filter:{}
+    elastic_filter:{},
+    age_group: ""
   },
   watch: {
     }

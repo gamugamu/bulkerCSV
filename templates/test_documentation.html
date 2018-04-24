@@ -6,7 +6,9 @@
   <meta name="description" content="The HTML5 Herald">
   <meta name="author" content="SitePoint">
   <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-  <script src="https://cdnjs.cloudflare.com/ajax/libs/vue/2.5.16/vue.js"></script>
+  <link rel="stylesheet" href="https://unpkg.com/vue-material@beta/dist/vue-material.min.css">
+  <link rel="stylesheet" href="https://unpkg.com/vue-material@beta/dist/theme/default.css">
+
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/materialize/1.0.0-beta/css/materialize.min.css">
   <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
 </head>
@@ -34,12 +36,7 @@
         <label>Cardinalité sur les groupes d'ages</label>
         <form action="#">
           {% for dict_item in ageGroup_cardinality %}
-            <p>
-              <label>
-                <input type="checkbox" value="{{dict_item['key']}}" @change="ageChange($event)"/>
-                <span>{{dict_item['key']}}</span>
-              </label>
-            </p>
+            <md-checkbox v-model="age_group" value="{{dict_item['key']}}" @change="ageChange()" >{{dict_item['key']}}</md-checkbox>
           {% endfor %}
         </form>
       </div>
@@ -85,6 +82,8 @@
     </div>
 </footer>
 
+<script src="https://unpkg.com/vue"></script>
+<script src="https://unpkg.com/vue-material@beta"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/materialize/1.0.0-beta/js/materialize.min.js"></script>
 <script src="https://unpkg.com/axios/dist/axios.min.js"></script>
 <script src={{url_for('static', filename='doc.js')}}></script>

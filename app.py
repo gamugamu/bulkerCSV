@@ -28,7 +28,8 @@ def match():
     args    = request.json.get("value")
     match   = []
     for key, value in args.items():
-        match.append({ "match" : {key : value} })
+        if value is not None:
+            match.append({ "match" : {key : value} })
 
     query   = { "bool": { "must" : match } }
     res     = es.search(index="kiabi", body={ "size":50, "query": query})
