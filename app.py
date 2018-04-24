@@ -11,7 +11,7 @@ app = Flask(__name__)
 def home():
     # basi request test elasticpath
     res         = es.search(index="kiabi", body={"size":0, "aggs" : {
-        "color"     : { "terms" : { "field" : "color.keyword", "size": 10}},
+        "color"     : { "terms" : { "field" : "generic_color.keyword", "size": 10}},
         "ageGroup"  : { "terms" : { "field" : "ageGroup.keyword", "size": 10}},
         "gender"    : { "terms" : { "field" : "gender.keyword", "size": 10}},
         "taille"    : { "terms" : { "field" : "taille.keyword", "size": 10}},
@@ -51,6 +51,10 @@ def match():
     res     = es.search(index="kiabi", body=body)
 
     count_pages = int(int(res["hits"]["total"]) / SIZE_PAGE)
-    print("get ", count_pages, from_pages, 'total: ', res["hits"]["total"]);
-    result = {"data":res["hits"]["hits"], "total_pages": count_pages, "current_page": from_pages}
+    print("total ", res["hits"]["total"])
+    result = {
+    "data":res["hits"]["hits"],
+    "hits": res["hits"]["total"],
+    "total_pages": count_pages,
+    "current_page": from_pages}
     return jsonify(result)

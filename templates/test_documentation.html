@@ -28,7 +28,7 @@
   </nav>
     <img class="header" src={{url_for('static', filename='img/header.jpg')}} alt="header">
     <div class="container">
-      <h4>Flux Kiabi</h4>
+      <h4>Flux Catalogue</h4>
       <hr flex/></span>
       <div id="app">
       </br>
@@ -39,7 +39,13 @@
             <label>Cardinalité sur les groupes d'ages</label>
             <form action="#">
               {% for dict_item in ageGroup_cardinality %}
-                <md-checkbox v-model="age_group" value="{{dict_item['key']}}">{{dict_item['key']}}</md-checkbox>
+                <md-checkbox v-model="age_group" value="{{dict_item['key']}}">
+                  {% if dict_item['key'] != "" %}
+                    {{dict_item['key']}}
+                  {% else %}
+                      unknow
+                  {% endif %}
+                </md-checkbox>
               {% endfor %}
             </form>
           </div>
@@ -47,7 +53,13 @@
             <label>Cardinalité sur le genre</label>
             <form action="#">
               {% for dict_item in gender_cardinality %}
-                <md-checkbox v-model="gender" value="{{dict_item['key']}}" >{{dict_item['key']}}</md-checkbox>
+                <md-checkbox v-model="gender" value="{{dict_item['key']}}" >
+                  {% if dict_item['key'] != "" %}
+                    {{dict_item['key']}}
+                  {% else %}
+                      unknow
+                  {% endif %}
+                </md-checkbox>
               {% endfor %}
             </form>
         </div>
@@ -100,7 +112,8 @@
           </div>
       </div>
 
-        <div class="col s6">
+      <div class="col s6">
+        <h3>Total: ${hits}</h3s>
       </div>
     </div>
 

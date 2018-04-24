@@ -4,9 +4,15 @@ Vue.use(VueMaterial.default)
 Vue.component('productlist', {
   template: `
     <div>
-      <div v-for="(product, index)  in products" v-bind:class="{one_line : true, product_hilighed : true, tooltipped : true}" v-on:mouseover="mouseOver">
+      <div class="relative" v-for="(product, index)  in products" v-bind:class="{one_line : true, product_hilighed : true, tooltipped : true}" v-on:mouseover="mouseOver">
         <img  class="product_result " :src="product._source.image_link_https"  :alt="index">
-        <md-tooltip md-direction="top">{{product._source.description.substring(0,110) + "..."}}</md-tooltip>
+        <div v-if="product._source.condition == 'new'" class="sticker white-text">NEW</div>
+        <md-tooltip md-direction="top">{{product._source.title}}</md-tooltip>
+        <div class="uuid white-text">{{product._source.price}} €</div>
+        <div class="price white-text">{{product._source.id}}</div>
+        <div v-if="product._source.rating" class="rating gray-text yellow">☆{{product._source.rating}}</div>
+        <div  class="taille red-text"><b>{{product._source.taille}}</b></div>
+
       </div>
     </div>
   `,computed: {
@@ -80,7 +86,7 @@ var app = new Vue({
           _this.$refs.productlist.products = response.data["data"]
           _this.current_page  = response.data["current_page"]
           _this.total_pages   = response.data["total_pages"]
-
+          _this.hits          = response.data["hits"]
           console.log("current_page", _this.current_page, _this.total_pages );
         })
         .catch(function (error) {
@@ -97,6 +103,7 @@ var app = new Vue({
     elastic_filter:{},
     age_group: "",
     gender: "",
+    hits: 0,
     selected_colors: [],
     selected_size: [],
     selected_material: [],
@@ -106,7 +113,7 @@ var app = new Vue({
   },
   watch: {
       'selected_colors': function(val, oldVal){
-        this.elk_change("color", val[0])
+        this.elk_change("generic_color", val[0])
       },
       'selected_size': function(val, oldVal){
         this.elk_change("taille", val[0])
@@ -118,7 +125,6 @@ var app = new Vue({
         this.elk_change("gender", val)
       },
       'taped_page': function(val, oldVal){
-        console.log("** taped_page");
         // taped_page / current_page est global
         this.elk_change("", 0)
       }
