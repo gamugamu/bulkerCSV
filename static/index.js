@@ -1,4 +1,6 @@
 
+Vue.use(VueMaterial.default)
+
 Vue.component('productlist', {
   template: `
     <div>
@@ -23,24 +25,14 @@ Vue.component('productlist', {
   },
 })
 
-Vue.use(VueMaterial.default)
 var app = new Vue({
   el: '#app',
   delimiters: ['${', '}'],
   methods: {
-    ageChange: function() {
-      this.elastic_filter["ageGroup"] = this.age_group
-      console.log("dw",  this.age_group);
-      this.axio_call(this.elastic_filter)
-    },
-    colorChange: function(e, value) {
-      console.log("selected colors", this.selected_colors);
-      this.elastic_filter["color"] = e.target.value
-      this.axio_call(this.elastic_filter)
-    },
     // fait la requete elasticpath pour retrouver les produits filtrés
     axio_call: function(arg){
       var _this = this
+      console.log("--> ", _this.$refs.productlist);
       // refuse l'appel si vide.
       if( Object.keys(arg).length){
         axios.post('match', {
@@ -60,16 +52,32 @@ var app = new Vue({
   data:{
     elastic_filter:{},
     age_group: "",
-    selected_colors: []
+    gender: "",
+    selected_colors: [],
+    selected_size: [],
+    selected_material: []
   },
   watch: {
       'selected_colors': function(val, oldVal){
         console.log("change", val);
         this.elastic_filter["color"] = val[0]
         this.axio_call(this.elastic_filter)
+      },
+      'selected_size': function(val, oldVal){
+        console.log("change", val);
+        this.elastic_filter["taille"] = val[0]
+        this.axio_call(this.elastic_filter)
+      },
+
+      'age_group':function(val, oldVal){
+        this.elastic_filter["ageGroup"] = val
+        console.log("dw",  this.age_group);
+        this.axio_call(this.elastic_filter)
+      },
+      'gender': function(val, oldVal){
+        console.log("gender", val);
+        this.elastic_filter["gender"] = val
+        this.axio_call(this.elastic_filter)
       }
   }
 });
-
-var elem      = document.querySelector('select');
-var instance  = M.FormSelect.init(elem);

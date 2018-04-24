@@ -6,10 +6,10 @@
   <meta name="description" content="The HTML5 Herald">
   <meta name="author" content="SitePoint">
   <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-  <link rel="stylesheet" href="https://unpkg.com/vue-material@beta/dist/vue-material.min.css">
-  <link rel="stylesheet" href="https://unpkg.com/vue-material@beta/dist/theme/default.css">
+  <link rel="stylesheet" href="{{url_for('static', filename='libs/css/material.css')}}">
+  <link rel="stylesheet" href="{{url_for('static', filename='libs/css/default_material.css')}}">
 
-  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/materialize/1.0.0-beta/css/materialize.min.css">
+  <link rel="stylesheet" href="{{url_for('static', filename='libs/css/materialize.css')}}">
   <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
 </head>
 
@@ -32,29 +32,75 @@
       </br>
       </br>
 
-      <div>
-        <label>Cardinalité sur les groupes d'ages</label>
-        <form action="#">
-          {% for dict_item in ageGroup_cardinality %}
-            <md-checkbox v-model="age_group" value="{{dict_item['key']}}" @change="ageChange()" >{{dict_item['key']}}</md-checkbox>
-          {% endfor %}
-        </form>
+      <div class="row">
+          <div class="col l6 s6">
+            <label>Cardinalité sur les groupes d'ages</label>
+            <form action="#">
+              {% for dict_item in ageGroup_cardinality %}
+                <md-checkbox v-model="age_group" value="{{dict_item['key']}}">{{dict_item['key']}}</md-checkbox>
+              {% endfor %}
+            </form>
+          </div>
+          <div class="col l6 s6">
+            <label>Cardinalité sur le genre</label>
+            <form action="#">
+              {% for dict_item in gender_cardinality %}
+                <md-checkbox v-model="gender" value="{{dict_item['key']}}" >{{dict_item['key']}}</md-checkbox>
+              {% endfor %}
+            </form>
+        </div>
       </div>
+
       </br>
 
-      <div>
-        <label>Cardinalité sur la couleur</label>
+      <div class="row">
+        <div class="col s6">
+            <label>Cardinalité sur la couleur</label>
+            <div class="md-layout-item">
+              <md-field  md-selected="colorChange">
+                  <label for="color_selector">Couleurs</label>
+                  <md-select id="color_selector" v-model="selected_colors" multiple>
+                    {% for dict_item in color_cardinality %}
+                      <md-option value="{{dict_item['key']}}">{{dict_item['key']}} - {{dict_item['doc_count']}}</md-option>
+                    {% endfor %}
+                  </md-select>
+              </md-field>
+            </div>
+        </div>
+
+          <div class="col s6">
+            <label>Cardinalité sur la taille</label>
+              <div class="md-layout-item">
+              <md-field  md-selected="colorChange">
+                  <label for="size_selector">Tailles</label>
+                  <md-select id="size_selector" v-model="selected_size" multiple>
+                    {% for dict_item in size_cardinality %}
+                      <md-option value="{{dict_item['key']}}">{{dict_item['key']}} - {{dict_item['doc_count']}}</md-option>
+                    {% endfor %}
+                  </md-select>
+              </md-field>
+          </div>
+        </div>
+    </div>
+
+    <div class="row">
+      <div class="col s6">
+          <label>Cardinalité sur la matière</label>
           <div class="md-layout-item">
-          <md-field  md-selected="colorChange">
-              <label for="color_selector">Couleurs</label>
-              <md-select md-selected="colorChange"  id="color_selector" v-model="selected_colors" multiple>
-                {% for dict_item in color_cardinality %}
-                  <md-option md-selected="colorChange" value="{{dict_item['key']}}">{{dict_item['key']}} - {{dict_item['doc_count']}}</md-option>
-                {% endfor %}
-              </md-select>
-          </md-field>
+            <md-field  md-selected="colorChange">
+                <label for="color_selector">Mat</label>
+                <md-select id="material_selector" v-model="selected_colors" multiple>
+                  {% for dict_item in material_cardinality %}
+                    <md-option value="{{dict_item['key']}}">{{dict_item['key']}} - {{dict_item['doc_count']}}</md-option>
+                  {% endfor %}
+                </md-select>
+            </md-field>
           </div>
       </div>
+
+        <div class="col s6">
+        </div>
+  </div>
 
         <div>
           <productlist ref="productlist" :products="[]"></productlist>
@@ -86,11 +132,11 @@
     </div>
 </footer>
 
-<script src="https://unpkg.com/vue"></script>
-<script src="https://unpkg.com/vue-material@beta"></script>
-<script src="https://cdnjs.cloudflare.com/ajax/libs/materialize/1.0.0-beta/js/materialize.min.js"></script>
+<script src="{{url_for('static', filename='libs/js/vue.js')}}"></script>
+<script src="{{url_for('static', filename='libs/js/vue_material.js')}}"></script>
+
 <script src="https://unpkg.com/axios/dist/axios.min.js"></script>
-<script src={{url_for('static', filename='doc.js')}}></script>
+<script src={{url_for('static', filename='index.js')}}></script>
 <link rel="stylesheet" href={{url_for('static', filename='doc.css')}}></link
 </body>
 </html>
