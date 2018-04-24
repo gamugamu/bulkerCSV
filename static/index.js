@@ -6,6 +6,7 @@ Vue.component('productlist', {
     <div>
       <div v-for="(product, index)  in products" v-bind:class="{one_line : true, product_hilighed : true, tooltipped : true}" v-on:mouseover="mouseOver">
         <img  class="product_result " :src="product._source.image_link_https"  :alt="index">
+        <md-tooltip md-direction="top">{{product._source.description.substring(0,110) + "..."}}</md-tooltip>
       </div>
     </div>
   `,computed: {
@@ -25,6 +26,42 @@ Vue.component('productlist', {
   },
 })
 
+Vue.component('pagination', {
+  template: `
+    <div>
+      <button v-for="item in this.$parent.total_pages" class="btn waves-effect waves-light" :key="item.id" v-on:click="show(item)">{{item}}</button>
+    </div>
+  `,computed: {
+  },
+  data: function () {
+      return {
+          pages: 10
+      };
+  },
+  methods: {
+    show: function (idx) {
+      console.log("show", idx) // someValue
+      this.$parent.taped_page = idx
+    //  this.elastic_filter["page"] = idx
+   },
+    submit: function (msg, e) {
+      e.stopPropagation()
+      console.log(msg) // someValue
+    },
+     mouseOver: function(e){
+       var idx = e.target.alt
+       if(this.products[idx]){
+         console.log(this.products[idx]._source);
+      }
+     }
+  },
+  watch: {
+      'pages': function(val, oldVal){
+        console.log('page changed', val);
+      },
+    }
+})
+
 var app = new Vue({
   el: '#app',
   delimiters: ['${', '}'],
@@ -32,21 +69,28 @@ var app = new Vue({
     // fait la requete elasticpath pour retrouver les produits filtrés
     axio_call: function(arg){
       var _this = this
-      console.log("--> ", _this.$refs.productlist);
       // refuse l'appel si vide.
       if( Object.keys(arg).length){
         axios.post('match', {
-          value: arg
+          value: arg,
+          from_pages: this.taped_page
         })
         .then(function (response) {
-          console.log("response", response, "data: ", response.data);
           // ne change pas
-          _this.$refs.productlist.products = response.data
+          _this.$refs.productlist.products = response.data["data"]
+          _this.current_page  = response.data["current_page"]
+          _this.total_pages   = response.data["total_pages"]
+
+          console.log("current_page", _this.current_page, _this.total_pages );
         })
         .catch(function (error) {
           console.log("error:", error);
         });
       }
+    },
+    elk_change(key, value){
+      this.elastic_filter[key] = value
+      this.axio_call(this.elastic_filter)
     }
   },
   data:{
@@ -56,31 +100,27 @@ var app = new Vue({
     selected_colors: [],
     selected_size: [],
     selected_material: [],
-    movie: 'godfather',
-     country: null,
-     font: null
+    current_page: 1,
+    total_pages: 1,
+    taped_page: 0
   },
   watch: {
       'selected_colors': function(val, oldVal){
-        console.log("change", val);
-        this.elastic_filter["color"] = val[0]
-        this.axio_call(this.elastic_filter)
+        this.elk_change("color", val[0])
       },
       'selected_size': function(val, oldVal){
-        console.log("change", val);
-        this.elastic_filter["taille"] = val[0]
-        this.axio_call(this.elastic_filter)
+        this.elk_change("taille", val[0])
       },
-
       'age_group':function(val, oldVal){
-        this.elastic_filter["ageGroup"] = val
-        console.log("dw",  this.age_group);
-        this.axio_call(this.elastic_filter)
+        this.elk_change("ageGroup", val)
       },
       'gender': function(val, oldVal){
-        console.log("gender", val);
-        this.elastic_filter["gender"] = val
-        this.axio_call(this.elastic_filter)
+        this.elk_change("gender", val)
+      },
+      'taped_page': function(val, oldVal){
+        console.log("** taped_page");
+        // taped_page / current_page est global
+        this.elk_change("", 0)
       }
   }
 });

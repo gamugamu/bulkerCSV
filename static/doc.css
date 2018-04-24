@@ -32,9 +32,7 @@ hr.style {
 }
 
 .product_result{
-  width: 100px;
-  height:100px;
-  background-color: gray;
+  width: 150px;
 }
 
 .product_hilighed{
@@ -71,7 +69,6 @@ hr.style {
   padding: 5px;
   border-style: dashed;
   border-width: 1px;
-  border-color: gray;
 }
 
 .method{

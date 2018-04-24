@@ -34,13 +34,23 @@ def home():
 @app.route('/match', methods=['POST'])
 def match():
     # simple matching test (AND)
-    args    = request.json.get("value")
-    match   = []
+    SIZE_PAGE   = 50
+    args        = request.json.get("value")
+    from_pages  = request.json.get("from_pages")
+    match = []
+
+    print("arg", args, "from_pages", from_pages)
 
     for key, value in args.items():
-        if value is not None:
+        if value is not None and key is not "":
             match.append({ "match" : {key : value} })
 
     query   = { "bool": { "must" : match } }
-    res     = es.search(index="kiabi", body={ "size":50, "query": query})
-    return jsonify(res["hits"]["hits"])
+    body    = { "size":SIZE_PAGE, "from":from_pages * SIZE_PAGE, "query": query}
+    print("body", body)
+    res     = es.search(index="kiabi", body=body)
+
+    count_pages = int(int(res["hits"]["total"]) / SIZE_PAGE)
+    print("get ", count_pages, from_pages, 'total: ', res["hits"]["total"]);
+    result = {"data":res["hits"]["hits"], "total_pages": count_pages, "current_page": from_pages}
+    return jsonify(result)

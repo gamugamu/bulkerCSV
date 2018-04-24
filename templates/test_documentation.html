@@ -12,7 +12,7 @@
   <link rel="stylesheet" href="{{url_for('static', filename='libs/css/materialize.css')}}">
   <link rel="stylesheet" href="{{url_for('static', filename='libs/css/nouislider.min.css')}}">
 
-  <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
+  <link href="{{url_for('static', filename='libs/fonts/font')}}" rel="stylesheet">
 </head>
 
 <body>
@@ -63,7 +63,7 @@
                   <label for="color_selector">Couleurs</label>
                   <md-select id="color_selector" v-model="selected_colors" multiple>
                     {% for dict_item in color_cardinality %}
-                      <md-option  value="{{dict_item['key']}}">{{dict_item['key']}} - {{dict_item['doc_count']}}</md-option>
+                      <md-option  value="{{dict_item['key']}}">{{dict_item['key']}}</md-option>
                     {% endfor %}
                   </md-select>
               </md-field>
@@ -77,15 +77,13 @@
                   <label for="size_selector">Tailles</label>
                   <md-select id="size_selector" v-model="selected_size" multiple>
                     {% for dict_item in size_cardinality %}
-                      <md-option value="{{dict_item['key']}}">{{dict_item['key']}} - {{dict_item['doc_count']}}</md-option>
+                      <md-option value="{{dict_item['key']}}">{{dict_item['key']}}</md-option>
                     {% endfor %}
                   </md-select>
               </md-field>
           </div>
         </div>
     </div>
-
-    <div id="test-slider"></div>
 
     <div class="row">
       <div class="col s6">
@@ -95,7 +93,7 @@
                 <label for="color_selector">Mat</label>
                 <md-select id="material_selector" v-model="selected_colors" multiple>
                   {% for dict_item in material_cardinality %}
-                    <md-option value="{{dict_item['key']}}">{{dict_item['key']}} - {{dict_item['doc_count']}}</md-option>
+                    <md-option value="{{dict_item['key']}}">{{dict_item['key']}}</md-option>
                   {% endfor %}
                 </md-select>
             </md-field>
@@ -106,7 +104,13 @@
       </div>
     </div>
 
+<div>
+  <h5>prix</h5>
+  <div id="test-slider"></div>
+  </br>
+</div>
         <div>
+          <pagination></pagination>
           <productlist ref="productlist" :products="[]"></productlist>
         </div>
       </div> <!-- app -->
