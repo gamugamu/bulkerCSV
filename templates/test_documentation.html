@@ -6,7 +6,7 @@
   <meta name="description" content="The HTML5 Herald">
   <meta name="author" content="SitePoint">
   <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-
+  <script src="https://unpkg.com/v-tooltip"></script>
   <script src="https://cdn.jsdelivr.net/npm/vue/dist/vue.js"></script>
   <script src="https://cdn.jsdelivr.net/npm/curl-parser-js@0.0.3/dist/parse-curl-js.js"></script>
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/materialize/1.0.0-beta/css/materialize.min.css">
@@ -27,7 +27,6 @@
     </div>
   </nav>
     <img class="header" src={{url_for('static', filename='img/header.jpg')}} alt="header">
-
     <div class="container">
       <h4>Flux Kiabi</h4>
       <hr flex/></span>
@@ -35,15 +34,17 @@
       </br>
       </br>
         <div class="input-field col s12">
-          <select multiple>
-            <option value="" disabled selected>Choose your option</option>
+          <select multiple @change="change($event)">
+            <option  ref="criteria" disabled selected>Choose your option</option>
             {% for dict_item in color_agreggation %}
-                <option value="{{loop.index}}">{{dict_item['key']}} - {{dict_item['doc_count']}}</option>
+                <option value="{{dict_item['key']}}">{{dict_item['key']}} - {{dict_item['doc_count']}}</option>
             {% endfor %}
           </select>
           <label>Cardinalité sur la couleur</label>
         </div>
-        <div style="height:200px">
+
+        <div>
+          <productlist ref="productlist" :products="[]"></productlist>
         </div>
       </div> <!-- app -->
     </div>

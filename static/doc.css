@@ -24,6 +24,20 @@ hr.style {
   margin-bottom: 0px;
 }
 
+.product_result{
+  width: 100px;
+  height:100px;
+  background-color: gray;
+}
+
+.product_hilighed{
+  border:1px solid red;
+}
+
+.one_line{
+  display:inline-block;
+}
+
 .logo{
   width: 40px;
   height:40px;
