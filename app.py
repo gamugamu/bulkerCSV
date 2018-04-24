@@ -27,6 +27,7 @@ def match():
     # simple matching test (AND)
     args    = request.json.get("value")
     match   = []
+    
     for key, value in args.items():
         if value is not None:
             match.append({ "match" : {key : value} })

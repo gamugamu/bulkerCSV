@@ -34,6 +34,7 @@ var app = new Vue({
       this.axio_call(this.elastic_filter)
     },
     colorChange: function(e, value) {
+      console.log("selected colors", this.selected_colors);
       this.elastic_filter["color"] = e.target.value
       this.axio_call(this.elastic_filter)
     },
@@ -58,10 +59,16 @@ var app = new Vue({
   },
   data:{
     elastic_filter:{},
-    age_group: ""
+    age_group: "",
+    selected_colors: []
   },
   watch: {
-    }
+      'selected_colors': function(val, oldVal){
+        console.log("change", val);
+        this.elastic_filter["color"] = val[0]
+        this.axio_call(this.elastic_filter)
+      }
+  }
 });
 
 var elem      = document.querySelector('select');

@@ -42,15 +42,19 @@
       </div>
       </br>
 
-        <div class="input-field col s12">
-          <select multiple @change="colorChange($event)">
-            <option  ref="criteria" disabled selected>Choose your option</option>
-            {% for dict_item in color_cardinality %}
-                <option value="{{dict_item['key']}}">{{dict_item['key']}} - {{dict_item['doc_count']}}</option>
-            {% endfor %}
-          </select>
-          <label>Cardinalité sur la couleur</label>
-        </div>
+      <div>
+        <label>Cardinalité sur la couleur</label>
+          <div class="md-layout-item">
+          <md-field  md-selected="colorChange">
+              <label for="color_selector">Couleurs</label>
+              <md-select md-selected="colorChange"  id="color_selector" v-model="selected_colors" multiple>
+                {% for dict_item in color_cardinality %}
+                  <md-option md-selected="colorChange" value="{{dict_item['key']}}">{{dict_item['key']}} - {{dict_item['doc_count']}}</md-option>
+                {% endfor %}
+              </md-select>
+          </md-field>
+          </div>
+      </div>
 
         <div>
           <productlist ref="productlist" :products="[]"></productlist>
