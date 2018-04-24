@@ -55,7 +55,10 @@ var app = new Vue({
     gender: "",
     selected_colors: [],
     selected_size: [],
-    selected_material: []
+    selected_material: [],
+    movie: 'godfather',
+     country: null,
+     font: null
   },
   watch: {
       'selected_colors': function(val, oldVal){
@@ -81,3 +84,15 @@ var app = new Vue({
       }
   }
 });
+
+var slider = document.getElementById('test-slider');
+ noUiSlider.create(slider, {
+  start: [20, 80],
+  connect: true,
+  step: 1,
+  orientation: 'horizontal', // 'horizontal' or 'vertical'
+  range: {
+    'min': 0,
+    'max': 100
+  }
+ });

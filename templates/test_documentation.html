@@ -10,16 +10,18 @@
   <link rel="stylesheet" href="{{url_for('static', filename='libs/css/default_material.css')}}">
 
   <link rel="stylesheet" href="{{url_for('static', filename='libs/css/materialize.css')}}">
+  <link rel="stylesheet" href="{{url_for('static', filename='libs/css/nouislider.min.css')}}">
+
   <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
 </head>
 
 <body>
   <nav>
     <div class="nav-wrapper grey darken-3">
-       <a href="#" class="brand-logo">Kiabi</a>
+       <a href="#" class="brand-logo white-text">Kiabi</a>
         <ul id="nav-mobile" class="right">
           <li>
-            <a href="collapsible.html">version 0.0</a>
+            <a href="collapsible.html" class="white-text">version 0.0</a>
           </li>
         </ul>
     </div>
@@ -57,11 +59,11 @@
         <div class="col s6">
             <label>Cardinalité sur la couleur</label>
             <div class="md-layout-item">
-              <md-field  md-selected="colorChange">
+              <md-field md-selected="colorChange">
                   <label for="color_selector">Couleurs</label>
                   <md-select id="color_selector" v-model="selected_colors" multiple>
                     {% for dict_item in color_cardinality %}
-                      <md-option value="{{dict_item['key']}}">{{dict_item['key']}} - {{dict_item['doc_count']}}</md-option>
+                      <md-option  value="{{dict_item['key']}}">{{dict_item['key']}} - {{dict_item['doc_count']}}</md-option>
                     {% endfor %}
                   </md-select>
               </md-field>
@@ -83,6 +85,8 @@
         </div>
     </div>
 
+    <div id="test-slider"></div>
+
     <div class="row">
       <div class="col s6">
           <label>Cardinalité sur la matière</label>
@@ -99,8 +103,8 @@
       </div>
 
         <div class="col s6">
-        </div>
-  </div>
+      </div>
+    </div>
 
         <div>
           <productlist ref="productlist" :products="[]"></productlist>
@@ -134,6 +138,7 @@
 
 <script src="{{url_for('static', filename='libs/js/vue.js')}}"></script>
 <script src="{{url_for('static', filename='libs/js/vue_material.js')}}"></script>
+<script src="{{url_for('static', filename='libs/js/nouislider.min.js')}}"></script>
 
 <script src="https://unpkg.com/axios/dist/axios.min.js"></script>
 <script src={{url_for('static', filename='index.js')}}></script>
