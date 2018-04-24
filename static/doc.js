@@ -16,8 +16,9 @@ Vue.component('productlist', {
   methods: {
      mouseOver: function(e){
        var idx = e.target.alt
-
-        console.log(this.products[idx]._source);
+       if(this.products[idx]){
+         console.log(this.products[idx]._source);
+      }
      }
   },
 })
@@ -26,27 +27,39 @@ var app = new Vue({
   el: '#app',
   delimiters: ['${', '}'],
   methods: {
-    change: function(e, value) {
-      //receive the value selected (return an array if is multiple)
-      console.log("changedValue", e.target.value, this.$refs.productlist)
-      //console.log(this.$refs.value);
-      var arg   = { "color" : e.target.value }
+    ageChange: function(e, value) {
+      if(e.target.checked){
+        this.elastic_filter["ageGroup"] = e.target.value
+      }else{
+        delete this.elastic_filter["ageGroup"]
+      }
+      this.axio_call(this.elastic_filter)
+    },
+    colorChange: function(e, value) {
+      this.elastic_filter["color"] = e.target.value
+      this.axio_call(this.elastic_filter)
+    },
+    // fait la requete elasticpath pour retrouver les produits filtrés
+    axio_call: function(arg){
       var _this = this
-
-      axios.post('match', {
-        value: arg
-      })
-      .then(function (response) {
-        console.log("response", response, "data: ", response.data);
-        console.log("---> ", _this.$refs.productlist.products );
-        _this.$refs.productlist.products = response.data
-      })
-      .catch(function (error) {
-        console.log("error:", error);
-      });
+      // refuse l'appel si vide.
+      if( Object.keys(arg).length){
+        axios.post('match', {
+          value: arg
+        })
+        .then(function (response) {
+          console.log("response", response, "data: ", response.data);
+          // ne change pas
+          _this.$refs.productlist.products = response.data
+        })
+        .catch(function (error) {
+          console.log("error:", error);
+        });
+      }
     }
   },
   data:{
+    elastic_filter:{}
   },
   watch: {
     }
@@ -54,4 +67,3 @@ var app = new Vue({
 
 var elem      = document.querySelector('select');
 var instance  = M.FormSelect.init(elem);
-console.log("done");

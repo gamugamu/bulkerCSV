@@ -10,14 +10,26 @@ app = Flask(__name__)
 @app.route('/')
 def home():
     # basi request test elasticpath
-    res = es.search(index="kiabi", body={"size":0, "aggs" : { "result" : { "terms" : { "field" : "color.keyword", "size": 10}}}})
-    print(res["aggregations"]["result"]["buckets"])
+    res         = es.search(index="kiabi", body={"size":0, "aggs" : {
+        "color"     : { "terms" : { "field" : "color.keyword", "size": 10}},
+        "ageGroup"  : { "terms" : { "field" : "ageGroup.keyword", "size": 10}}
+    }})
 
-    return render_template('test_documentation.html', color_agreggation=res["aggregations"]["result"]["buckets"])
+    card_colors     = res["aggregations"]["color"]["buckets"]
+    card_ageGroup   = res["aggregations"]["ageGroup"]["buckets"]
+
+    return render_template('test_documentation.html',
+        color_cardinality       = card_colors,
+        ageGroup_cardinality    = card_ageGroup)
 
 @app.route('/match', methods=['POST'])
 def match():
-    # simple matching test
+    # simple matching test (AND)
     args    = request.json.get("value")
-    res     = es.search(index="kiabi", body={ "size":50, "query": { "match" : args}})
+    match   = []
+    for key, value in args.items():
+        match.append({ "match" : {key : value} })
+
+    query   = { "bool": { "must" : match } }
+    res     = es.search(index="kiabi", body={ "size":50, "query": query})
     return jsonify(res["hits"]["hits"])

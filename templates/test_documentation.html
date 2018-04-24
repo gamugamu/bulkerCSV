@@ -6,12 +6,8 @@
   <meta name="description" content="The HTML5 Herald">
   <meta name="author" content="SitePoint">
   <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-  <script src="https://unpkg.com/v-tooltip"></script>
-  <script src="https://cdn.jsdelivr.net/npm/vue/dist/vue.js"></script>
-  <script src="https://cdn.jsdelivr.net/npm/curl-parser-js@0.0.3/dist/parse-curl-js.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/vue/2.5.16/vue.js"></script>
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/materialize/1.0.0-beta/css/materialize.min.css">
-  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/prismjs@1.13.0/themes/prism-tomorrow.css"></script>
-  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/prismjs@1.13.0/plugins/line-numbers/prism-line-numbers.css"></script>
   <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
 </head>
 
@@ -33,10 +29,26 @@
       <div id="app">
       </br>
       </br>
+
+      <div>
+        <label>Cardinalité sur les groupes d'ages</label>
+        <form action="#">
+          {% for dict_item in ageGroup_cardinality %}
+            <p>
+              <label>
+                <input type="checkbox" value="{{dict_item['key']}}" @change="ageChange($event)"/>
+                <span>{{dict_item['key']}}</span>
+              </label>
+            </p>
+          {% endfor %}
+        </form>
+      </div>
+      </br>
+
         <div class="input-field col s12">
-          <select multiple @change="change($event)">
+          <select multiple @change="colorChange($event)">
             <option  ref="criteria" disabled selected>Choose your option</option>
-            {% for dict_item in color_agreggation %}
+            {% for dict_item in color_cardinality %}
                 <option value="{{dict_item['key']}}">{{dict_item['key']}} - {{dict_item['doc_count']}}</option>
             {% endfor %}
           </select>
@@ -73,8 +85,6 @@
     </div>
 </footer>
 
-<script src="https://cdn.jsdelivr.net/npm/prismjs@1.13.0/prism.js"></script>
-<script src="https://cdn.jsdelivr.net/npm/prismjs@1.13.0/plugins/line-numbers/prism-line-numbers.min.js"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/materialize/1.0.0-beta/js/materialize.min.js"></script>
 <script src="https://unpkg.com/axios/dist/axios.min.js"></script>
 <script src={{url_for('static', filename='doc.js')}}></script>
