@@ -33,6 +33,7 @@ hr.style {
 
 .product_result{
   width: 180px;
+  min-height: 250px;
 }
 
 .product_hilighed{
@@ -41,6 +42,13 @@ hr.style {
 
 .one_line{
   display:inline-block;
+}
+
+.loader_oneline{
+  margin-left: auto;
+  margin-right: auto;
+  width: 600px;
+  margin-top: 30px;
 }
 
 .logo{
@@ -65,7 +73,7 @@ hr.style {
 
 .sticker{
   width: 35px;
-  background-color: red;
+  background-color: rgba(0, 0, 0, 0.4);
   position: absolute;
   top: 0px;
   left: 0px;
@@ -91,11 +99,29 @@ hr.style {
 
 .rating{
   min-width: 30px;
-  background-color: rgba(1, 0, 0, 0.6);
   text-align: center;
   position: absolute;
   top: 0px;
   right: 0px;
+}
+
+.add_interest{
+  position: absolute;
+  width: 30px;
+  height: 30px;
+  text-align: center;
+  color: white  ;
+  font-size: 15px;
+  font-weight: bold;
+  top: 40px;
+  left: 5px;
+  border-radius: 50%;
+  padding-top: 5px;
+  font-family: 'Varela Round', sans-serif;
+  background-image: url("https://www.freeiconspng.com/uploads/heart-png-15.png");
+  background-size: contain;
+  background-repeat:no-repeat;
+  background-position: center center;
 }
 
 .taille{
@@ -189,4 +215,36 @@ pre {
   padding: 0px;
   margin: 0px;
   background-color: AliceBlue;
+}
+
+#status_page {
+  position: fixed;
+  width: 20;
+  text-align: center;
+  font-size: 15px;
+  bottom: 20px;
+  right: 20px;
+  background-color: red;
+  color: white;
+}
+
+.fade-enter-active, .fade-leave-active {
+  transition: opacity .2s;
+  animation: bounce-in .2s;
+}
+
+.fade-enter, .fade-leave-to /* .fade-leave-active below version 2.1.8 */ {
+  opacity: 0;
+  animation: bounce-in .2s reverse;
+}
+@keyframes bounce-in {
+  0% {
+    transform: scale(0);
+  }
+  50% {
+    transform: scale(1.2);
+  }
+  100% {
+    transform: scale(1);
+  }
 }
