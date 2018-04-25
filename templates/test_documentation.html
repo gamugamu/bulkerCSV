@@ -99,17 +99,9 @@
 
     <div class="row">
       <div class="col s6">
-          <label>Cardinalité sur la matière</label>
-          <div class="md-layout-item">
-            <md-field  md-selected="colorChange">
-                <label for="color_selector">Mat</label>
-                <md-select id="material_selector" v-model="selected_colors" multiple>
-                  {% for dict_item in material_cardinality %}
-                    <md-option value="{{dict_item['key']}}">{{dict_item['key']}}</md-option>
-                  {% endfor %}
-                </md-select>
-            </md-field>
-          </div>
+        <h5>prix</h5>
+        <div id="test-slider"></div>
+        </br>
       </div>
 
       <div class="col s6">
@@ -118,9 +110,7 @@
     </div>
 
 <div>
-  <h5>prix</h5>
-  <div id="test-slider"></div>
-  </br>
+
 </div>
         <div>
           <pagination></pagination>
@@ -156,6 +146,7 @@
     </div>
 </footer>
 
+<script src="{{url_for('static', filename='libs/js/materialize.min.js')}}"></script>
 <script src="{{url_for('static', filename='libs/js/vue.js')}}"></script>
 <script src="{{url_for('static', filename='libs/js/vue_material.js')}}"></script>
 <script src="{{url_for('static', filename='libs/js/nouislider.min.js')}}"></script>

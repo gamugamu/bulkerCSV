@@ -36,6 +36,13 @@ hr.style {
   min-height: 250px;
 }
 
+.product_result_more{
+  width: 362px;
+  max-height: 250px;
+  object-fit: cover; /* Do not scale the image */
+  object-position: center; /* Center the image within the element */
+}
+
 .product_hilighed{
   border:1px solid white;
 }
@@ -122,6 +129,12 @@ hr.style {
   background-size: contain;
   background-repeat:no-repeat;
   background-position: center center;
+}
+
+.separator_image{
+  width: 70px;
+  height: 20px;
+  background-color: red;
 }
 
 .taille{

@@ -1,47 +1,77 @@
 
 Vue.use(VueMaterial.default)
 
+var WEIGHT = 1
 Vue.component('productlist', {
   template: `
     <div id="productlist">
-      <div class="relative hoverable" v-for="(product, index)  in products" v-bind:class="{one_line : true, product_hilighed : true, tooltipped : true}" v-on:click="clicked(index)" v-on:mouseover="mouseOver">
-        <img  class="product_result " :src="product._source.image_link_https"  :alt="index">
+      <div v-for="(product, index)  in products" class="relative hoverable one_line product_hilighed tooltipped" v-on:click="clicked(index)" v-on:mouseover="mouseOver">
+
+        <div v-if="(index % 6) -1 == 0">
+          <img class="product_result product_result_more" :src="product._source.image_link_https"  :alt="index">
+        </div>
+        <div v-else-if="_weight(1)">
+          <img class="product_result" :src="product._source.image_link_https"  :alt="index">
+        </div>
+
         <div v-if="product._source.condition == 'new'" class="sticker white-text">NEW</div>
         <md-tooltip md-direction="top">{{product._source.title}}</md-tooltip>
         <div class="uuid white-text">{{product._source.price}} €</div>
         <div class="price white-text">{{product._source.id}}</div>
         <product_interest ref="product_interest"></product_interest>
         <div v-if="product._source.rating" class="rating gray-text">☆{{product._source.rating}}</div>
-        <div class="taille red-text"><b>{{product._source.taille}}</b></div>
+        <div class="taille red-text"><b>{{product._source.taille}} - {{index}}</b></div>
       </div>
-      </br>
-        <md-progress-bar class="loader_oneline" v-if="this.$parent.is_performing_request" md-mode="indeterminate"></md-progress-bar>
-      </br>
+        </br>
+          <md-progress-bar v-if="this.$parent.is_performing_request" class="loader_oneline" md-mode="indeterminate"></md-progress-bar>
+        </br>
+        <div v-if="need_more">
+        NEED MORE
+        </div>
     </div>
   `,computed: {
   },
   data: function () {
       return {
-          products: []
+          products: [],
+          need_more: false
       };
   },
   methods: {
     mouseOver: function(e){
        var idx = e.target.alt
        if(this.products[idx]){
-         console.log(this.products[idx]._source);
       }
     },
     clicked:function(e){
-      console.log("clicked", this.$refs, e);
       this.$refs["product_interest"][e].add_interest(1)
+    },
+    _weight:function(w){
+      if(w == 1){
+        WEIGHT++
+        return true
+      }else if (WEIGHT % 5 != 0){
+        console.log("+");
+        WEIGHT+= 2
+        return true
+      }else{
+        return false
+      }
+    },
+    re_init: function (event) {
+      console.log("reinit___");
+      WEIGHT = 1
+    },
+    re_display: function (event) {
+      var div = document.getElementById('productlist');
+      console.log(div.offsetTop);
+      window.scrollTo(0, div.offsetTop);
     },
     handleScroll: function (event) {
            // your code here
       //console.log("scroll", event);
       // example use
       var div = document.getElementById('productlist');
-      console.log(div.offsetTop);
       var is_out_bound  =  div.getBoundingClientRect().top + div.clientHeight - window.innerHeight <= 0
 
       if (is_out_bound){
@@ -83,8 +113,17 @@ Vue.component('product_interest', {
 Vue.component('pagination', {
   template: `
     <div>
-      <button v-for="(item, index) in this.$parent.total_pages"
-      class="btn-flat waves-light" :key="item.id" v-on:click="show(item)">{{item}}</button>
+
+    <ul class="collapsible">
+     <li>
+      <div class="collapsible-header"><i class="material-icons">filter_9_plus</i>Pages</div>
+      <div class="collapsible-body">
+          <button v-for="(item, index) in this.$parent.total_pages"
+            class="btn-flat waves-light" :key="item.id" v-on:click="show(item)">{{item}}</button>
+        </div>
+      </li>
+    </ul>
+
     </div>
   `,computed: {
   },
@@ -128,6 +167,7 @@ var app = new Vue({
       // refuse l'appel si vide.
       if( Object.keys(arg).length && this.is_performing_request == false){
         this.is_performing_request = true;
+        console.log("***********");
 
         setTimeout(function(){
           axios.post('match', {
@@ -135,41 +175,42 @@ var app = new Vue({
             from_pages: _this.current_page + 1
           })
           .then(function (response) {
-            if(has_delta && _this.delta_page < 3){
+            console.log("-----------");
+            _this.$refs.productlist.re_init()
+            if(has_delta && _this.delta_page < 4){
               // append
               _this.delta_page += 1;
               _this.$refs.productlist.products.push.apply(_this.$refs.productlist.products, response.data["data"])
               _this.total_pages = response.data["total_pages"] * _this.delta_page
             }else{
               // reinit
-              _this.$refs.productlist.products = response.data["data"]
-              _this.total_pages = response.data["total_pages"]
               _this.delta_page  = 0
+              _this.$refs.productlist.re_display()
+
+              _this.total_pages = response.data["total_pages"]
+              _this.$refs.productlist.products = response.data["data"]
+
               // scroll to offsetY productlist
-              var div = document.getElementById('productlist');
-              console.log(div.offsetTop);
-              window.scrollTo(0, div.offsetTop);
+            //  _this.$refs.productlist.re_display()
             }
 
             _this.current_page  = response.data["current_page"]
             _this.total_pages   = response.data["total_pages"]
             _this.hits          = response.data["hits"]
-            console.log("________current_page", _this.current_page, _this.total_pages );
+
             _this.is_performing_request = false;
           })
           .catch(function (error) {
             console.log("________error:", error);
-            _this.is_performing_request = false;
           });
-        }, 300);
+        }, 1000);
       }
     },
     elk_change(key, value){
       this.elastic_filter[key] = value
       this.axio_call(this.elastic_filter)
     },
-    ask_next_page(){
-      console.log("new page*** ", this.current_page, this.total_pages);
+    ask_next_page(call_back){
       // Il faut au moins une recherche valide/
       if(this.total_pages != 0){
         this.axio_call(this.elastic_filter, has_delta=true)
@@ -185,7 +226,7 @@ var app = new Vue({
     selected_size: [],
     selected_material: [],
     current_page: 0,
-    total_pages: 1,
+    total_pages: 0,
     taped_page: 0,
     is_performing_request: false,
     delta_page: 0,
@@ -227,6 +268,9 @@ var slider = document.getElementById('test-slider');
     'max': 100
   }
  });
+
+var elem = document.querySelector('.collapsible');
+var instance = M.Collapsible.init(elem);
 
  // helpers
  function offset(el) {
