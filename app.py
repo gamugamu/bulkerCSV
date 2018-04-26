@@ -37,24 +37,38 @@ def match():
     SIZE_PAGE   = 50
     args        = request.json.get("value")
     from_pages  = request.json.get("from_pages")
-    match = []
-
-    print("arg", args, "from_pages", from_pages)
+    match = [] # AND
+    terms = [] # OR
 
     for key, value in args.items():
         if value is not None and key is not "":
-            match.append({ "match" : {key : value} })
+            if isinstance(value, list):
+                print("******** ")
+                # note: Elastic search est trop stupide pour retrouver les
+                # termes renvoyés par la cardinalité en case sensitive:
+                # ex "BLEU" -> BLEU ne fonctionne pas.
+                # Alors que "bleu" -> Bleu fonctionne. Pour que ça soit case
+                # insensitive, il faut au préalable indiquer dans le mapping le type
+                # d'analyse à faire; Sinon ça ne fonctionne pas.
+                # https://pranavprakash.net/2017/09/13/case-insensitive-exact-match-search-in-elasticsearch/
+                to_lower = list(map(lambda x:x.lower(), value))
+                print("TO_LOWER ", to_lower)
+                match.append({ "terms" : {key : to_lower} }) # OR
+            else:
+                match.append({ "match" : {key : value} }) # AND
 
-    query   = { "bool": { "must" : match } }
-    body    = { "size":SIZE_PAGE, "from":from_pages * SIZE_PAGE, "query": query}
+
+    query       = { "bool": { "must" : match } }
+    body        = { "size":SIZE_PAGE, "from":from_pages * SIZE_PAGE, "query": query}
     print("body", body)
-    res     = es.search(index="kiabi", body=body)
 
+    res         = es.search(index="kiabi", body=body)
     count_pages = int(int(res["hits"]["total"]) / SIZE_PAGE)
-    print("total ", res["hits"]["total"])
+
     result = {
-    "data":res["hits"]["hits"],
-    "hits": res["hits"]["total"],
-    "total_pages": count_pages,
-    "current_page": from_pages}
+        "data"          :res["hits"]["hits"],
+        "hits"          : res["hits"]["total"],
+        "total_pages"   : count_pages,
+        "current_page"  : from_pages}
+
     return jsonify(result)

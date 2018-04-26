@@ -41,6 +41,7 @@ Vue.component('productlist', {
     mouseOver: function(e){
        var idx = e.target.alt
        if(this.products[idx]){
+         console.log("p", this.products[idx]);
       }
     },
     clicked:function(e){
@@ -167,7 +168,6 @@ var app = new Vue({
       // refuse l'appel si vide.
       if( Object.keys(arg).length && this.is_performing_request == false){
         this.is_performing_request = true;
-        console.log("***********");
 
         setTimeout(function(){
           axios.post('match', {
@@ -175,7 +175,6 @@ var app = new Vue({
             from_pages: _this.current_page + 1
           })
           .then(function (response) {
-            console.log("-----------");
             _this.$refs.productlist.re_init()
             if(has_delta && _this.delta_page < 4){
               // append
@@ -206,7 +205,8 @@ var app = new Vue({
         }, 1000);
       }
     },
-    elk_change(key, value){
+    elk_change(key, value, page=0){
+      this.current_page = page
       this.elastic_filter[key] = value
       this.axio_call(this.elastic_filter)
     },
@@ -234,25 +234,19 @@ var app = new Vue({
   },
   watch: {
       'selected_colors': function(val, oldVal){
-        this.current_page = 0
-        this.elk_change("generic_color", val[0])
+        this.elk_change("generic_color", val)
       },
       'selected_size': function(val, oldVal){
-        this.current_page = 0
-        this.elk_change("taille", val[0])
+        this.elk_change("taille", val)
       },
       'age_group':function(val, oldVal){
-        this.current_page = 0
         this.elk_change("ageGroup", val)
       },
       'gender': function(val, oldVal){
-        this.current_page = 0
         this.elk_change("gender", val)
       },
       'taped_page': function(val, oldVal){
-        // taped_page / current_page est global
-        this.current_page = val - 1
-        this.elk_change("", 0)
+        this.elk_change("", 0, page = val - 1)
       }
   }
 });

@@ -125,7 +125,7 @@ hr.style {
   border-radius: 50%;
   padding-top: 5px;
   font-family: 'Varela Round', sans-serif;
-  background-image: url("https://www.freeiconspng.com/uploads/heart-png-15.png");
+  background-image: url("../static/img/heart.png");
   background-size: contain;
   background-repeat:no-repeat;
   background-position: center center;
@@ -228,6 +228,13 @@ pre {
   padding: 0px;
   margin: 0px;
   background-color: AliceBlue;
+}
+
+.picto_desc{
+  height: 40px !important;
+  max-width: 200px !important;
+
+  margin-left: 10px;
 }
 
 #status_page {
