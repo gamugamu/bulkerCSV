@@ -2,9 +2,12 @@
 Vue.use(VueMaterial.default)
 
 var WEIGHT = 1
+var bus = new Vue()
+
 Vue.component('productlist', {
   template: `
     <div id="productlist">
+    <div v-if="products.length">
       <div v-for="(product, index)  in products" class="relative hoverable one_line product_hilighed tooltipped" v-on:click="clicked(index)" v-on:mouseover="mouseOver">
 
         <div v-if="(index % 6) -1 == 0">
@@ -18,7 +21,7 @@ Vue.component('productlist', {
         <md-tooltip md-direction="top">{{product._source.title}}</md-tooltip>
         <div class="uuid white-text">{{product._source.price}} €</div>
         <div class="price white-text">{{product._source.id}}</div>
-        <product_interest ref="product_interest"></product_interest>
+        <product_interest :product_uid="product._id" ref="product_interest"></product_interest>
         <div v-if="product._source.rating" class="rating gray-text">☆{{product._source.rating}}</div>
         <div class="taille red-text"><b>{{product._source.taille}} - {{index}}</b></div>
       </div>
@@ -28,6 +31,10 @@ Vue.component('productlist', {
         <div v-if="need_more">
         NEED MORE
         </div>
+      </div>
+      <div v-else class="center-align">
+        No result found
+      </div>
     </div>
   `,computed: {
   },
@@ -65,8 +72,11 @@ Vue.component('productlist', {
     },
     re_display: function (event) {
       var div = document.getElementById('productlist');
-      console.log(div.offsetTop);
+      console.log("asked redisplay");
       window.scrollTo(0, div.offsetTop);
+      setTimeout(function(){
+        bus.$emit('re_display');
+      }, 100)
     },
     handleScroll: function (event) {
            // your code here
@@ -88,8 +98,9 @@ Vue.component('productlist', {
       window.removeEventListener('scroll', this.handleScroll);
   }
 })
-
+var __interest = {}
 Vue.component('product_interest', {
+  props : ['product_uid'],
   template: `
     <div>
         <transition name="fade">
@@ -104,9 +115,29 @@ Vue.component('product_interest', {
           interest: 0
       };
   },
+  created: function(){
+    var _this = this
+    bus.$on('re_display', function () {
+      console.log("** redisplayed", __interest);
+      var v = __interest[_this.product_uid]
+      console.log("---v", _this.product_uid, v);
+      if (typeof v === 'undefined'){
+        v = 0
+      }
+      _this.interest = v
+    })
+  },
   methods: {
     add_interest: function (incr) {
-      this.interest = (this.interest + 1) % 6
+      var interest = __interest[this.product_uid]
+      console.log("__interest[this.product_uid]", this.product_uid);
+
+      if (typeof interest === 'undefined'){
+        interest = 0
+      }
+      this.interest = ++interest % 6
+      __interest[this.product_uid] = this.interest
+      console.log(__interest[this.product_uid]);
    }
 }
 })
@@ -157,6 +188,7 @@ Vue.component('pagination', {
     }
 })
 
+var __tId = null // private!
 var app = new Vue({
   el: '#app',
   delimiters: ['${', '}'],
@@ -188,9 +220,6 @@ var app = new Vue({
 
               _this.total_pages = response.data["total_pages"]
               _this.$refs.productlist.products = response.data["data"]
-
-              // scroll to offsetY productlist
-            //  _this.$refs.productlist.re_display()
             }
 
             _this.current_page  = response.data["current_page"]
@@ -202,12 +231,13 @@ var app = new Vue({
           .catch(function (error) {
             console.log("________error:", error);
           });
-        }, 1000);
+        }, 200);
       }
     },
     elk_change(key, value, page=0){
-      this.current_page = page
-      this.elastic_filter[key] = value
+      this.current_page             = page
+      this.elastic_filter[key]      = value
+      this.elastic_filter["RANGE"]  = this.elastic_range // bad scope
       this.axio_call(this.elastic_filter)
     },
     ask_next_page(call_back){
@@ -219,6 +249,8 @@ var app = new Vue({
   },
   data:{
     elastic_filter:{},
+    elastic_range:{},
+    price_range: [0, 100],
     age_group: "",
     gender: "",
     hits: 0,
@@ -232,6 +264,21 @@ var app = new Vue({
     delta_page: 0,
     active: true
   },
+  created: function(){
+    var _this = this
+    bus.$on('price_change', function (value, handle) {
+      if(_this.elastic_range){
+        clearTimeout(__tId)
+
+        _this.elastic_range['price_range']  = value
+        _this.price_range                   = value // display
+
+        __tId = setTimeout(function(){
+          _this.elk_change("", 0)
+        }, 1000);
+      }
+    })
+   },
   watch: {
       'selected_colors': function(val, oldVal){
         this.elk_change("generic_color", val)
@@ -251,9 +298,10 @@ var app = new Vue({
   }
 });
 
+// Note: Tout ces fonctions sont due à l'incompleteté de vue material.
 var slider = document.getElementById('test-slider');
  noUiSlider.create(slider, {
-  start: [20, 80],
+  start: [0, 100],
   connect: true,
   step: 1,
   orientation: 'horizontal', // 'horizontal' or 'vertical'
@@ -263,15 +311,17 @@ var slider = document.getElementById('test-slider');
   }
  });
 
+ slider.noUiSlider.on('update', function( values, handle ) {
+   bus.$emit('price_change', values, handle);
+ });
+
 var elem = document.querySelector('.collapsible');
 var instance = M.Collapsible.init(elem);
 
  // helpers
  function offset(el) {
-    var rect = el.getBoundingClientRect(),
-    scrollLeft = window.pageXOffset || document.documentElement.scrollLeft,
-    scrollTop = window.pageYOffset || document.documentElement.scrollTop;
+    var rect    = el.getBoundingClientRect(),
+    scrollLeft  = window.pageXOffset || document.documentElement.scrollLeft,
+    scrollTop   = window.pageYOffset || document.documentElement.scrollTop;
     return { top: rect.top + scrollTop, left: rect.left + scrollLeft }
 }
-
-console.log("done");
