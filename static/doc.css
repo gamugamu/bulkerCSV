@@ -52,8 +52,19 @@ hr.style {
 }
 
 .book{
+    background-color: Teal ;
     position: fixed;
-    background-color: blue;
+    top: 100px;
+    right: 20px;
+    width: 100px;
+    height: 100px;
+    object-fit: cover;
+    border-radius: 50%;
+    background-image: url("../static/img/book.png");
+    background-size: contain;
+    background-repeat:no-repeat;
+    background-position: center center;
+    background-size: 80px 80px;
 }
 
 .loader_oneline{

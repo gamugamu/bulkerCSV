@@ -73,7 +73,8 @@ Vue.component('productlist', {
     re_display: function (event) {
       var div = document.getElementById('productlist');
       console.log("asked redisplay");
-      window.scrollTo(0, div.offsetTop);
+      window.scroll({top: div.offsetTop, left: 0, behavior: 'smooth' });
+    //  window.scrollTo(0, div.offsetTop, behavior: 'smooth');
       setTimeout(function(){
         bus.$emit('re_display');
       }, 100)
@@ -301,13 +302,13 @@ var app = new Vue({
 // Note: Tout ces fonctions sont due à l'incompleteté de vue material.
 var slider = document.getElementById('test-slider');
  noUiSlider.create(slider, {
-  start: [0, 100],
+  start: [0, 300],
   connect: true,
   step: 1,
   orientation: 'horizontal', // 'horizontal' or 'vertical'
   range: {
     'min': 0,
-    'max': 100
+    'max': 300
   }
  });
 
