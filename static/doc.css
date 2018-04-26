@@ -51,6 +51,11 @@ hr.style {
   display:inline-block;
 }
 
+.book{
+    position: fixed;
+    background-color: blue;
+}
+
 .loader_oneline{
   margin-left: auto;
   margin-right: auto;
