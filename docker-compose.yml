@@ -2,26 +2,22 @@ version: "2.0"
 services:
   elasticsearch:
     image: elasticsearch:latest
-    container_name: elasticsearch
-    networks:
-      - docker-elk
+    container_name: "elasticsearch"
     ports:
-      - "9200:9200"
-      - "9300:9300"
+      - 9200:9200
+      - 9300:9300
 
-  kibana:
-    image: kibana:latest
-    ports:
-      - "5601:5601"
-    networks:
-      - docker_elk
+  search_kb_product:
+    image: cryptodraco/kiabi_product_suggestion:v0.0.1
+    container_name: "search_kb_product"
+    hostname: search_kb_product
+    restart: always
+
     environment:
-      - "ELASTICSEARCH_URL=http://elasticsearch:9200"
-    networks:
-      - docker-elk
+      - NUC=1 #environement de dev
     depends_on:
       - elasticsearch
-
-networks:
-  docker-elk:
-    driver: bridge
+    links:
+      - elasticsearch
+    ports:
+      - 5000:5000

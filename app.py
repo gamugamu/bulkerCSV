@@ -2,9 +2,10 @@ from flask import Flask, request, jsonify
 from flask import render_template
 from elasticsearch import Elasticsearch
 import json
+import os
 
-
-es  = Elasticsearch([{'host': 'localhost', 'port': 9200}])
+host_name  = 'elasticsearch' if os.environ.get('NUC') is not None else 'localhost'
+es  = Elasticsearch([{'host': host_name, 'port': 9200}])
 app = Flask(__name__)
 
 @app.route('/')
