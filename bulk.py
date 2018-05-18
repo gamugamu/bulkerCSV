@@ -66,12 +66,12 @@ def bulk(language, url):
 	    download        = s.get(url)
 	    print("will serialize")
 	    decoded_content = download.content.decode('utf-8')
-	    reader = csv.DictReader(decoded_content.splitlines(), delimiter='|')
+	    reader 			= csv.DictReader(decoded_content.splitlines(), delimiter='|')
 
 	    print("will bulk")
 	    # bulk peut prendre beaucoup de temps. Considérer quelques minutes
 	    # en fonction de la taille du csv et de sa complexitée.
-	    helpers.bulk(es, reader, index='kiabi', doc_type='product', request_timeout=60 * 10)
+	    helpers.bulk(es, reader, index=language, doc_type='product', request_timeout=60 * 10)
 	    print("bulked ")
 
 # pour chaque langue, un index. Depuis le fichier conf. lang(index)= key, url=value
