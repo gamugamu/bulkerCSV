@@ -42,6 +42,16 @@ def match():
     terms = [] # OR
     range = []
 
+    # example
+    # {'value': {
+    # 'RANGE': {'price_range': ['13.00', '209.00']},
+    # 'generic_color': ['NOIR'],
+    # 'gender': 'male',
+    # 'ageGroup': 'adult',
+    # 'taille': ['M']},
+    # 'from_pages': 1}
+
+    print("----> ", request.json)
     for key, value in args.items():
         if value is not None and key is not "":
             if isinstance(value, list) or isinstance(value, dict):
@@ -75,6 +85,8 @@ def match():
         # elastic path aime pas les tableaux vides :(
         match.extend(range) # AND
 
+    print("match", match)
+    
     query       = { "bool": { "must" : match } }
     body        = { "size":SIZE_PAGE, "from":from_pages * SIZE_PAGE, "query": query}
     res         = es.search(index="kiabi", body=body)
@@ -82,7 +94,7 @@ def match():
     print("body", body)
 
     result = {
-        "data"          :res["hits"]["hits"],
+        "data"          : res["hits"]["hits"],
         "hits"          : res["hits"]["total"],
         "total_pages"   : count_pages,
         "current_page"  : from_pages}

@@ -1,0 +1,5 @@
+[section_language]
+FR=http://dl-cron.lengow.com/FluxKiabi/googleshopping_FR_fr.txt
+ES=http://dl-cron.lengow.com/FluxKiabi/googleshopping_ES_es.txt
+IT=http://dl-cron.lengow.com/FluxKiabi/googleshopping_IT_it.txt
+RU=http://dl-cron.lengow.com/FluxKiabi/googleshopping_RU_ru.txt
